@@ -76,16 +76,24 @@ class CreateHandler(BaseHandler):
 #-----------------------------------------------------------------------------
 
 def format_handlers(formats, handlers):
-    return [
-        (prefix + url, handler, {
-            "format": format,
-            "format_prefix": prefix
-        })
-        for format in formats
-        for url, handler in handlers
-        for prefix in [format_prefix + format]
-    ]
+    new_handlers = []
 
+    for format in formats:
+        for idx in range(len(handlers)):
+            for prefix in [format_prefix + format]:
+                if len(handlers[idx]) == 3 and isinstance(handlers[idx][2], dict) and 'path' in handlers[idx][2]:
+                    new_handlers.append((prefix + handlers[idx][0], handlers[idx][1], {
+                            'format': format,
+                            'format_prefix': prefix,
+                            'path': handlers[idx][2]['path']
+                        }))
+                else:
+                    new_handlers.append((prefix + handlers[idx][0], handlers[idx][1], {
+                            'format': format,
+                            'format_prefix': prefix
+                        }))
+    
+    return new_handlers
 
 def init_handlers(formats, providers, base_url, localfiles):
     pre_providers = [

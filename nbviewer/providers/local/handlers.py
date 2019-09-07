@@ -261,6 +261,7 @@ def default_handlers(handlers=[]):
     """Tornado handlers"""
 
     return handlers + [
+        (r'/localfile/(.*.(png|jpeg|gif))', web.StaticFileHandler, {'path': '/root/jupyter_notebooks/'}),
         (r'/localfile/?(.*)', LocalFileHandler),
     ]
 
